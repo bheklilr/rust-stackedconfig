@@ -6,7 +6,7 @@ config object with precedence.
 ## Why should I use this library?
 
 You shouldn't, it isn't anywhere near done yet and I'm definitely not the best
-at keeping up with side projects.
+at keeping up with side projects.  **This software is pre-alpha.**
 
 ## Why does this library exist?
 
