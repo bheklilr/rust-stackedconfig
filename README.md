@@ -113,3 +113,14 @@ fn main() {
     println!("{}", stack.get("web/proxy/http")?.unwrap());
 }
 ```
+
+## Limitations
+
+Currently right now it only supports `serde_json`.  My plan is to add
+`serde_yaml` and maybe some other formats as this project grows.
+
+## License
+
+I put it under MIT, but honestly I really don't care what anyone does with this
+code.  It is provided as-is.  If you find a bug, feel free to submit an issue,
+or even better submit a PR fixing it.
