@@ -4,6 +4,10 @@ version = "0.1.0"
 authors = ["Aaron Stevens <bheklilr2@gmail.com>"]
 description = "Treat multiple nested config objects as a single config object with precedence."
 license = "MIT"
+repository = "https://github.com/bheklilr/rust-stackedconfig"
+homepage = "https://github.com/bheklilr/rust-stackedconfig"
+readme = "README.md"
+keywords = ["json", "yaml", "serde", "config", "configuration"]
 
 [dependencies]
 serde_json = "1.0"
