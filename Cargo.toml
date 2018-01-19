@@ -1,11 +1,12 @@
 [package]
 name = "stackedconfig"
-version = "0.1.1"
+version = "0.1.2"
 authors = ["Aaron Stevens <bheklilr2@gmail.com>"]
-description = "Treat multiple nested config objects as a single config object with precedence."
+description = "!!! DO NOT USE !!! Treat multiple nested config objects as a single config object with precedence. !!! DO NOT USE !!!"
 license = "MIT"
 repository = "https://github.com/bheklilr/rust-stackedconfig"
 homepage = "https://github.com/bheklilr/rust-stackedconfig"
+documentation = "https://bheklilr.github.io/rust-stackedconfig/stackedconfig/"
 readme = "README.md"
 keywords = ["json", "yaml", "serde", "config", "configuration"]
 
