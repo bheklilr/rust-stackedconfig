@@ -3,15 +3,23 @@ extern crate serde_json;
 
 use serde_json::{Value};
 
+/// Combines multiple `serde_json::Value` objects together so they can be
+/// queried as a single, nested object.
 #[derive(Debug)]
 pub struct ConfigStack {
     path_sep: char,
     configs: Vec<Value>,
 }
 
+/// Return value from looking up a path from a ConfigStack
+///
+///     conf.get("/foo/bar")      // Lookup::Found(1)
+///     conf.get("/foo/bar/baz")  // Lookup::Missing
 #[derive(Debug, PartialEq)]
 pub enum Lookup {
+    /// Indicates that the path did not resolve to a value
     Missing,
+    /// Contains the `serde_json::Value` found from a lookup
     Found(Value),
 }
 
