@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["Lookup","Return value from looking up a path from a ConfigStack"]],"struct":[["ConfigStack","Combines multiple `serde_json::Value` objects together so they can be queried as a single, nested object."]]});
