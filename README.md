@@ -119,6 +119,11 @@ fn main() {
 }
 ```
 
+## Documentation
+
+The docs are build using `rustdoc` and are hosted
+[here](https://bheklilr.github.io/rust-stackedconfig/stackedconfig/).
+
 ## Limitations
 
 Currently right now it only supports `serde_json`.  My plan is to add
