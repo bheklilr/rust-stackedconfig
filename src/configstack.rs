@@ -1,5 +1,4 @@
 extern crate serde;
-use self::serde::{Deserialize};
 
 use gettable::{Gettable};
 
@@ -30,7 +29,7 @@ pub enum Lookup<Value> {
 
 
 impl<'de, Value> ConfigStack<Value>
-    where Value: Gettable + Deserialize<'de>
+    where Value: Gettable + serde::Deserialize<'de>
     {
     /// Create a new `ConfigStack`
     pub fn new() -> ConfigStack<Value> {
