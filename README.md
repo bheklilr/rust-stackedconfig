@@ -3,6 +3,9 @@
 Treat multiple nested config objects (e.g. JSON or YAML files) as a single
 config object with precedence.
 
+[![Latest Version](https://img.shields.io/crates/v/stackedconfig.svg)](https://crates.io/crates/stackedconfig)
+[![Rust Documentation](https://img.shields.io/badge/api-rustdoc-blue.svg)](https://bheklilr.github.io/rust-stackedconfig/stackedconfig/)
+
 ## Why should I use this library?
 
 You shouldn't, it isn't anywhere near done yet and I'm definitely not the best
@@ -124,10 +127,18 @@ fn main() {
 The docs are build using `rustdoc` and are hosted
 [here](https://bheklilr.github.io/rust-stackedconfig/stackedconfig/).
 
-## Limitations
+## Formats supported
 
-Currently right now it only supports `serde_json`.  My plan is to add
-`serde_yaml` and maybe some other formats as this project grows.
+Currently this library supports the following formats, each implemented as an
+optional feature:
+
+* JSON via `serde_json`
+* YAML via `serde_yaml`
+* HJSON via `serde-hjson`
+* BSON via `bson`
+
+If you want to be able to support other formats, or your own custom type, just
+implement the `stackedconfig::Gettable` trait.
 
 ## License
 
