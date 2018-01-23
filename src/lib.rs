@@ -1,7 +1,9 @@
 #[macro_use]
+extern crate serde;
+#[macro_use]
 extern crate serde_json;
 
-use serde_json::{Value};
+use serde::{Deserialize};
 
 /// Combines multiple `serde_json::Value` objects together so they can be
 /// queried as a single, nested object.
@@ -9,7 +11,7 @@ use serde_json::{Value};
 /// Supports using a custom separator if desired for path style queries.
 /// Defaults to a forward slash `/`.
 #[derive(Debug)]
-pub struct ConfigStack {
+pub struct ConfigStack<Value> {
     path_sep: char,
     configs: Vec<Value>,
 }
@@ -21,16 +23,28 @@ pub struct ConfigStack {
 ///
 /// [`ConfigStack`]: ./struct.ConfigStack.html
 #[derive(Debug, PartialEq)]
-pub enum Lookup {
+pub enum Lookup<Value> {
     /// Indicates that the path did not resolve to a value
     Missing,
     /// Contains the `serde_json::Value` found from a lookup
     Found(Value),
 }
 
-impl ConfigStack {
+pub trait Gettable: std::marker::Sized {
+    fn _get(&self, key: &String) -> Option<&Self>;
+}
+
+impl Gettable for serde_json::Value {
+    fn _get(&self, key: &String) -> Option<&Self> {
+        self.get(key)
+    }
+}
+
+impl<'de, Value> ConfigStack<Value>
+    where Value: Gettable + Deserialize<'de>
+    {
     /// Create a new `ConfigStack`
-    pub fn new() -> ConfigStack {
+    pub fn new() -> ConfigStack<Value> {
         ConfigStack { path_sep: '/', configs: vec![], }
     }
 
@@ -40,7 +54,7 @@ impl ConfigStack {
     /// let conf = ConfigStack::new().with_path_sep('.').push(v1).push(v2);
     /// let val = conf.get("foo.bar.baz");
     /// ```
-    pub fn with_path_sep(self, sep: char) -> ConfigStack {
+    pub fn with_path_sep(self, sep: char) -> ConfigStack<Value> {
         ConfigStack {
             path_sep: sep,
             configs: self.configs,
@@ -49,7 +63,7 @@ impl ConfigStack {
 
     /// Adds a new configuration value to the stack.  The added value becomes
     /// the highest priority value on the stack.
-    pub fn push(mut self, config: Value) -> ConfigStack {
+    pub fn push(mut self, config: Value) -> ConfigStack<Value> {
         self.configs.push(config);
         self
     }
@@ -74,20 +88,20 @@ impl ConfigStack {
     /// conf.get("foo/bar/baz") -> Lookup::Found(Value::Bool(true))
     /// conf.get("foo/bar/qux") -> Lookup::Missing
     /// ```
-    pub fn get(&self, path: &str) -> Lookup {
+    pub fn get(&self, path: &str) -> Lookup<&Value> {
         self.get_parts(self.path_to_parts(path))
     }
 
     /// Looks up a value at the given path where the path is a `Vec<String>`. No
     /// parsing is performed on the path parts, so this method will not split on
     /// the path separator.
-    pub fn get_parts(&self, path_parts: Vec<String>) -> Lookup {
+    pub fn get_parts(&self, path_parts: Vec<String>) -> Lookup<&Value> {
         'outer: for i in 0..self.configs.len() {
             let idx = self.configs.len() - i - 1;
-            let mut node = &self.configs[idx];
+            let mut node: &Value = &self.configs[idx];
 
             for part in path_parts.iter() {
-                match node.get(part) {
+                match node._get(part) {
                     Some(subobj) => node = subobj,
                     None => {
                         if idx == 0 {
@@ -109,8 +123,8 @@ mod tests {
 
     #[test]
     fn test_lookup() {
-        fn work() -> serde_json::Result<ConfigStack> {
-            let stack = ConfigStack::new();
+        fn work() -> serde_json::Result<ConfigStack<serde_json::Value>> {
+            let stack: ConfigStack<serde_json::Value> = ConfigStack::new();
 
             let s1 = r#"{
                 "a": {
@@ -121,7 +135,7 @@ mod tests {
                     "e": 1
                 }
             }"#;
-            let v1: Value = serde_json::from_str(s1)?;
+            let v1: serde_json::Value = serde_json::from_str(s1)?;
 
             let s2 = r#"{
                 "a": {
@@ -130,14 +144,16 @@ mod tests {
                     }
                 }
             }"#;
-            let v2: Value = serde_json::from_str(s2)?;
+            let v2: serde_json::Value = serde_json::from_str(s2)?;
             Ok(stack.push(v1).push(v2))
         }
 
         match work() {
             Ok(stack) => {
-                let expected: Value = json!(2);
-                assert_eq!(stack.get("a/b/c"), Lookup::Found(expected));
+                let data = json!(2);
+                let expected: Lookup<&serde_json::Value> = Lookup::Found(&data);
+                let actual = stack.get("a/b/c");
+                assert_eq!(actual, expected);
             },
             _ => assert!(false),
         }
