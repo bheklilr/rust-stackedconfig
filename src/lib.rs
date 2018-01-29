@@ -1,5 +1,4 @@
 #[cfg(feature = "json")]
-#[macro_use]
 extern crate serde_json;
 #[cfg(feature = "yaml")]
 extern crate serde_yaml;
@@ -8,8 +7,8 @@ extern crate serde_hjson;
 
 mod gettable;
 mod configstack;
-use gettable::{Gettable};
-use configstack::{ConfigStack, Lookup};
+pub use gettable::{Gettable};
+pub use configstack::{ConfigStack, Lookup};
 
 #[cfg(feature = "json")]
 mod json;

@@ -22,11 +22,11 @@ mod tests {
             let s1 = r#"
                 a:
                     b:
-                        c:
-                            d:
-                                - 1
-                                - 2
-                                - 3
+                        c: 1
+                        d:
+                            - 1
+                            - 2
+                            - 3
                     e: 1
             "#;
             let v1: Value = from_str(s1)?;
@@ -43,7 +43,7 @@ mod tests {
         match work() {
             Ok(stack) => {
                 let data = from_str("2").unwrap();
-                let expected: Lookup<&Value> = Lookup::Found(&data);
+                let expected = Lookup::Found(&data);
                 let actual = stack.get("a/b/c");
                 assert_eq!(actual, expected);
             },

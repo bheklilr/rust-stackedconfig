@@ -28,8 +28,8 @@ pub enum Lookup<Value> {
 }
 
 
-impl<'de, Value> ConfigStack<Value>
-    where Value: Gettable + serde::Deserialize<'de>
+impl<Value> ConfigStack<Value>
+    where Value: Gettable
     {
     /// Create a new `ConfigStack`
     pub fn new() -> ConfigStack<Value> {
